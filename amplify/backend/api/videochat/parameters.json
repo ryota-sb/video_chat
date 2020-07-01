@@ -1,0 +1,11 @@
+{
+    "AppSyncApiName": "videochat",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": "false",
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": [
+            "authvideochatae357420",
+            "Outputs.UserPoolId"
+        ]
+    }
+}
