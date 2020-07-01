@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import App from './App.vue'
-import './registerServiceWorker'
+import vuetify from './plugins/vuetify';
 import router from './router'
 import store from './store'
+import './registerServiceWorker'
 import './localize'
+
 import Amplify, * as AmplifyModules from 'aws-amplify'
 import { AmplifyPlugin } from 'aws-amplify-vue'
 import aws_exports from './aws-exports'
@@ -18,6 +20,7 @@ Vue.use(AmplifyPlugin, AmplifyModules)
 new Vue({
   router,
   store,
+  vuetify,
   components: {
     App,
     ...components

@@ -1,7 +1,9 @@
 <template>
-  <div class="home">
-    <h1>こんにちは</h1>
-  </div>
+  <v-container>
+    <v-row justify="center">
+      <h1>こんにちは</h1>
+    </v-row>
+  </v-container>
 </template>
 
 <script>

@@ -1,12 +1,16 @@
 <template>
-  <div class="signin">
-    <div v-if="!signedIn">
-      <amplify-authenticator :authConfig="authConfig"></amplify-authenticator>
-    </div>
-    <div v-if="signedIn">
-      <amplify-sign-out></amplify-sign-out>
-    </div>
-  </div>
+  <v-container>
+    <v-row justify="center">
+      <div class="signin">
+        <div v-if="!signedIn">
+          <amplify-authenticator :authConfig="authConfig"></amplify-authenticator>
+        </div>
+        <div v-if="signedIn">
+          <amplify-sign-out></amplify-sign-out>
+        </div>
+      </div>
+    </v-row>
+  </v-container>
 </template>
 
 <script>

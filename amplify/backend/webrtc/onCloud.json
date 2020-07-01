@@ -1,0 +1,7 @@
+{
+    "channelName": "amplify-videochat-default-183214-SC",
+    "ttl": "60",
+    "channelArn": "arn:aws:kinesisvideo:ap-northeast-1:329395960936:channel/amplify-videochat-default-183214-SC/1593606148403",
+    "policyName": "amplify-videochat-default-183214-SC-policy",
+    "policyArn": "arn:aws:iam::329395960936:policy/amplify-videochat-default-183214-SC-policy"
+}
