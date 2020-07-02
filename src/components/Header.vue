@@ -2,10 +2,9 @@
   <v-container>
     <v-app-bar
       app
-      color="primary"
+      color="green darken-4"
       dark
     >
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
       <v-toolbar-title>Video Chat</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn
@@ -25,9 +24,9 @@ export default {
   data() {
     return {
       routes: [
-        { name: 'home',   link: '/',       icon: 'mdi-magnify'},
-        { name: 'room',   link: '/room',   icon: 'mdi-heart' },
-        { name: 'signin', link: '/signin', icon: 'mdi-magnify' },
+        { name: 'home',   link: '/',       icon: 'mdi-home'},
+        { name: 'room',   link: '/room',   icon: 'mdi-message-video' },
+        { name: 'signin', link: '/signin', icon: 'mdi-login' },
       ]
     }
   }

@@ -39,7 +39,7 @@ AmplifyEventBus.$on('authState', async(state) => {
     router.push({ path: '/signin' })
   } else if (state === 'signedIn') { 
     user = await getUser()
-    router.push({ path: '/' })
+    router.push({ path: '/room' })
   }
 })
 
