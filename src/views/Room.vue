@@ -1,6 +1,8 @@
 <template>
-  <v-container>
+  <div>
     <v-row justify="center">
+
+      <!-- 接続時の通知など -->
       <v-snackbar
         top
         v-model="snack.display"
@@ -11,50 +13,33 @@
         {{ snack.text }}
       </v-snackbar>
 
-     <!-- 読み込みの可視化（ロードバー）-->
-      <v-progress-linear
-        v-if="progress"
-        indeterminate
-        color="green darken-4"
-        height="10"
-        rounded
-      ></v-progress-linear>
-
-      <!-- ビデオ設定？ -->
+      <!-- ビデオ画面 -->
       <v-row dense justify="center">
-        <v-col :cols="5">
-          <v-card>
-            <v-toolbar dense>
-              <v-toolbar-title>
-                Master
-              </v-toolbar-title>  
-            </v-toolbar>
-            <video
-              id="local"
-              :srcObject.prop="localStream"
-              autoplay muted playsinline
-              @click="playVideo('local')"
-            />
-          </v-card>
-        </v-col>
+        <video
+          id="local"
+          :srcObject.prop="localStream"
+          autoplay muted playsinline
+          @click="playVideo('local')"
+        />
         
-        <v-col :cols="5">
-          <v-card>
-            <v-toolbar dense>
-              <v-toolbar-title>
-                Viewer
-              </v-toolbar-title>  
-            </v-toolbar>
-            <video
-              id="remote"
-              :srcObject.prop="remoteStream"
-              autoplay playsinline
-              @click="playVideo('remote')"
-            />
-          </v-card>
-        </v-col>
+        <video
+          id="remote"
+          :srcObject.prop="remoteStream"
+          autoplay playsinline
+          @click="playVideo('remote')"
+        />
       </v-row>
     </v-row>
+
+    <!-- 読み込みの可視化（ロードバー）--> 
+    <v-progress-linear
+      v-if="progress"
+      indeterminate
+      color="green darken-4"
+      height="2"
+      rounded
+    ></v-progress-linear>
+     
 
     <!-- 下タブ -->
     <v-bottom-navigation
@@ -63,21 +48,65 @@
       horizontal
       color="green darken-4"
     >
-      <v-row align="center" justify="center">
+      <v-row  align="center" justify="center">
+        <!-- Master ボタン -->
         <v-btn @click="selectRole('Master')">
-          <span>Master</span>
-          <v-icon large>mdi-account</v-icon>      
+          <v-row dense>
+            <v-col>
+              <v-icon large>mdi-account</v-icon>
+              <div class="caption">Master</div>
+            </v-col>
+          </v-row> 
         </v-btn>
+
+        <!-- Viewer ボタン -->
         <v-btn @click="selectRole('Viewer')">
-          <span>Viewer</span>
-          <v-icon large>mdi-account-group-outline</v-icon> 
+          <v-row dense>
+            <v-col>
+              <v-icon large>mdi-account-group-outline</v-icon>
+              <div class="caption">Viewer</div>
+            </v-col>
+          </v-row>
         </v-btn>
-        <v-btn @click="stopAndSignOut()">
-          <v-icon>mdi-stop-circle</v-icon>
-        </v-btn>
+
+        <!-- ビデオ通話停止ボタン -->
+        <div v-if="this.localStream">
+          <v-btn @click="stopAndSignOut()">
+            <v-row dense>
+              <v-col>
+                <v-icon>mdi-stop-circle</v-icon>
+                <div class="caption">停止</div>
+              </v-col>
+            </v-row>
+          </v-btn>
+        </div>
+
+        <!-- ミュートボタン -->
+        <div v-if="this.localStream">
+          <v-btn @click="audioMute()">
+            <v-row dense>
+              <v-col>
+                <v-icon>{{ audioMuteIcon }}</v-icon>
+                <div class="caption">{{ audioMuteText }}</div>
+              </v-col>
+            </v-row>
+          </v-btn>
+        </div>
+
+        <!-- 映像切替（on off） -->
+        <div v-if="this.localStream">
+          <v-btn @click="videoSwitch()">
+            <v-row dense>
+              <v-col>
+                <v-icon>{{ videoSwitchIcon }}</v-icon>
+                <div class="caption">{{ videoSwitchText }}</div>
+              </v-col>
+            </v-row>
+          </v-btn>
+        </div>
       </v-row>
     </v-bottom-navigation>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -92,17 +121,51 @@ export default {
         color: 'green darken-4',
         text: null,
       },
-      activeBtn: 3,
+      activeBtn: 5,
       isMaster: false,
 
       // シグナリングサーバに送る情報関係
       signalingClient: null,
       localStream: null,
       remoteStream: null,
-      peerConnection: null
+      peerConnection: null,
+
+      // 音声と映像の状態
+      isAudioMute: false,
+      isVideoSwitch: false
+    }
+  },
+  computed: {
+    audioMuteIcon() {
+      return this.isAudioMute ? 'mdi-volume-off' : 'mdi-volume-high'
+    },
+    audioMuteText() {
+      return this.isAudioMute ? 'ミュート解除' : 'ミュート'
+    },
+    videoSwitchIcon() {
+      return this.isVideoSwitch ? 'mdi-video-off' : 'mdi-video'
+    },
+    videoSwitchText() {
+      return this.isVideoSwitch ? 'ON' : 'OFF'
     }
   },
   methods: {
+    audioMute() {
+      if (this.localStream) {
+        const audioTrack = this.localStream.getTracks()[0]
+        this.isAudioMute = !this.isAudioMute
+        audioTrack.enabled = !this.isAudioMute
+        console.log(audioTrack)
+      }
+    },
+    videoSwitch() {
+      if (this.localStream) {
+        const videoTrack = this.localStream.getTracks()[1]
+        this.isVideoSwitch = !this.isVideoSwitch
+        videoTrack.enabled = !this.isVideoSwitch
+        console.log(videoTrack)
+      }
+    },
     displayInfo(text) {
       this.snack.display = true
       this.snack.text = text
@@ -153,7 +216,6 @@ export default {
       const mediaConf = {
         audio: true,
         video: {
-          width: { min: 320, max: 640 },
           facingMode: {
             exact: "user"
           }
@@ -189,14 +251,18 @@ export default {
 </script>
 
 <style>
+video#remote {
+  max-width: 200px;
+  height: auto;
+  position: absolute;
+  right: 0px;
+  bottom: 56px;
+}
+
 video#local {
-  width: 100%;
+  max-width: 600px;
   height: auto;
 }
 
-video#remote {
-  width: 100%;
-  height: auto;
-}
 </style>
 
